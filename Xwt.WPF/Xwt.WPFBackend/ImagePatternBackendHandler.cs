@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Drawing;
 using Xwt.Backends;
 
 namespace Xwt.WPFBackend
@@ -34,8 +35,13 @@ namespace Xwt.WPFBackend
 	{
 		public object Create (object img)
 		{
-			// TODO
-			return new object();
+			Bitmap bmp = DataConverter.AsBitmap (img);
+			var bmap = bmp.LockBits (new System.Drawing.Rectangle (0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, bmp.PixelFormat);
+			Cairo.ImageSurface surface = new Cairo.ImageSurface (bmap.Scan0, Cairo.Format.Argb32, bmp.Width, bmp.Height, bmap.Stride);
+			var p = new Cairo.SurfacePattern (surface);
+			p.Extend = Cairo.Extend.Repeat;
+			bmp.UnlockBits (bmap);
+			return p;
 		}
 	}
 }

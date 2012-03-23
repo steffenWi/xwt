@@ -34,6 +34,7 @@ using Xwt.Engine;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Xwt.CairoBackend;
 
 namespace Xwt.WPFBackend
 {
@@ -155,8 +156,18 @@ namespace Xwt.WPFBackend
 
 			this.wbitmap.Lock();
 
-			using (Graphics g = Graphics.FromImage (this.bbitmap))
-				CanvasEventSink.OnDraw (new DrawingContext (g));
+			using (Graphics g = Graphics.FromImage (this.bbitmap)) {
+				CairoContextBackend ccb = new CairoContextBackend ();
+				Cairo.Win32Surface srf = new Cairo.Win32Surface (g.GetHdc ());
+				ccb.Context = new Cairo.Context (srf);
+				using (ccb.Context) {
+					Toolkit.Invoke (delegate
+					{
+						CanvasEventSink.OnDraw (ccb);
+					});
+				}
+				//				CanvasEventSink.OnDraw (new DrawingContext (g));
+			}
 
 			if (this.fullRedraw || this.dirtyRects.Count == 0) {
 				this.wbitmap.AddDirtyRect (new Int32Rect (0, 0, this.wbitmap.PixelWidth, this.wbitmap.PixelHeight));

@@ -33,6 +33,7 @@ using System.Windows;
 using Xwt.Backends;
 using Xwt.Drawing;
 using Xwt.Engine;
+using Xwt.CairoBackend;
 
 namespace Xwt.WPFBackend
 {
@@ -67,9 +68,9 @@ namespace Xwt.WPFBackend
 			WidgetRegistry.RegisterBackend (typeof (ScrollView), typeof (ScrollViewBackend));
 			WidgetRegistry.RegisterBackend (typeof (Frame), typeof (FrameBackend));
 			WidgetRegistry.RegisterBackend (typeof (Canvas), typeof (CanvasBackend));
-			WidgetRegistry.RegisterBackend (typeof (Context), typeof (ContextBackendHandler));
-			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (GradientBackendHandler));
-			WidgetRegistry.RegisterBackend (typeof (TextLayout), typeof (TextLayoutBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Context), typeof (WpfCairoContextBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (Gradient), typeof (CairoGradientBackendHandler));
+			WidgetRegistry.RegisterBackend (typeof (TextLayout), typeof (CairoTextLayoutBackendHandler));
 			WidgetRegistry.RegisterBackend (typeof (Widget), typeof (CustomWidgetBackend));
 			WidgetRegistry.RegisterBackend (typeof (Paned), typeof (PanedBackend));
 			WidgetRegistry.RegisterBackend (typeof (ScrollAdjustment), typeof (ScrollAdjustmentBackend));

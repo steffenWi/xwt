@@ -27,6 +27,7 @@
 using System.Drawing;
 using Xwt.Backends;
 using Xwt.Drawing;
+using Xwt.CairoBackend;
 
 namespace Xwt.WPFBackend
 {
@@ -41,7 +42,11 @@ namespace Xwt.WPFBackend
 		public object CreateContext (object backend)
 		{
 			Bitmap bmp = (Bitmap) backend;
-			return new DrawingContext (Graphics.FromImage (bmp));
+			var g = Graphics.FromImage (bmp);
+			CairoContextBackend ccb = new CairoContextBackend ();
+			Cairo.Win32Surface srf = new Cairo.Win32Surface (g.GetHdc ());
+			ccb.Context = new Cairo.Context (srf);
+			return ccb;
 		}
 
 		public object CreateImage (object backend)
