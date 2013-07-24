@@ -369,9 +369,9 @@ namespace Xwt.Mac
 			}
 			set {
 				this.backgroundColor = value;
-				if (Widget.Layer == null)
-					Widget.WantsLayer = true;
-				Widget.Layer.BackgroundColor = value.ToCGColor ();
+				//if (Widget.Layer == null)
+				//	Widget.WantsLayer = true;
+				//Widget.Layer.BackgroundColor = value.ToCGColor ();
 			}
 		}
 		
