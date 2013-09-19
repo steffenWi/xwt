@@ -95,7 +95,7 @@ namespace Xwt.WPFBackend.Utilities
 				FrameworkElementFactory factory = new FrameworkElementFactory (typeof (SWC.CheckBox));
 				factory.SetValue (FrameworkElement.MarginProperty, CellMargins);
 				if (cellView.ActiveField != null) {
-					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.ActiveField.Index + "]"));
+					factory.SetBinding (SWC.CheckBox.IsCheckedProperty, new Binding (dataPath + "[" + cellView.StateField.Index + "]"));
 				}
 
 				return factory;
