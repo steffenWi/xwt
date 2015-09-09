@@ -39,6 +39,7 @@ namespace Xwt.WPFBackend
 	public class ListViewBackend
 		: WidgetBackend, IListViewBackend
 	{
+		private Dictionary<GridViewColumnHeader, GridViewColumn> headerAndColumnPairs = new Dictionary<GridViewColumnHeader, GridViewColumn>();
 		public ListViewBackend()
 		{
 			ListView = new ExListView();
@@ -182,11 +183,23 @@ namespace Xwt.WPFBackend
 			if (col.HeaderView != null)
 				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
-				column.Header = col.Title;
+			{
+				GridViewColumnHeader header = new GridViewColumnHeader();
+				headerAndColumnPairs.Add(header, column);
+				header.Content = col.Title;
+				header.Click += Header_Click;
+				column.Header = header;
+			}
 
 			this.view.Columns.Add(column);
 
 			return column;
+		}
+
+		private void Header_Click(object sender, RoutedEventArgs e)
+		{
+			GridViewColumn handle = headerAndColumnPairs[sender as GridViewColumnHeader];
+			ListViewEventSink.ColumnHeaderClicked(handle);
 		}
 
 		public void RemoveColumn(ListViewColumn col, object handle)
@@ -197,11 +210,33 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn(ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn)handle;
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
-			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
-			else
-				column.Header = col.Title;
+			switch (change)
+			{
+				case ListViewColumnChange.Title:
+					if (col.HeaderView != null)
+						column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+					else
+						column.Header = col.Title;
+
+					break;
+				case ListViewColumnChange.Cells:
+					column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
+					break;
+				case ListViewColumnChange.CanResize:
+					break;
+				case ListViewColumnChange.SortDirection:
+					int colIndex = col.SortDataField.Index;
+					(ListView.ItemsSource as ListDataSource).Sort(colIndex, col.SortDirection);
+					break;
+				case ListViewColumnChange.SortDataField:
+					break;
+				case ListViewColumnChange.SortIndicatorVisible:
+					break;
+				case ListViewColumnChange.Alignment:
+					break;
+				default:
+					break;
+			}
 		}
 
 		public void SetSelectionMode(SelectionMode mode)
