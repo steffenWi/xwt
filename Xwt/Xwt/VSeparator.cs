@@ -28,10 +28,9 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	public class VSeparator : Separator
+	public class VSeparator: Separator
 	{
-		internal override Orientation Orientation
-		{
+		internal override Orientation Orientation {
 			get { return Orientation.Vertical; }
 		}
 	}
