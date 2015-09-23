@@ -67,12 +67,17 @@ namespace Xwt.WPFBackend
 			ComboBox.DisplayMemberPath = ".[0]";
 			//ComboBox.ItemTemplate = DefaultTemplate;
 			ComboBox.ItemContainerStyle = ContainerStyle;
-		}
+        }
 
 		public void SetViews(CellViewCollection views)
 		{
 			ComboBox.DisplayMemberPath = null;
 			ComboBox.ItemTemplate = GetDataTemplate(views);
+		}
+
+		public void SetIsEditable(bool isEditable)
+		{
+			ComboBox.IsEditable = isEditable;
 		}
 
 		public void SetSource(IListDataSource source, IBackend sourceBackend)
@@ -88,6 +93,11 @@ namespace Xwt.WPFBackend
 		{
 			get { return ComboBox.SelectedIndex; }
 			set { ComboBox.SelectedIndex = value; }
+		}
+
+		public string SelectedText
+		{
+			get { return ComboBox.Text; }			
 		}
 
 		public override void EnableEvent(object eventId)

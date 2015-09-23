@@ -75,6 +75,11 @@ namespace Xwt
 			return new WidgetBackendHost();
 		}
 
+		public void SetIsEditable(bool value)
+		{
+			Backend.SetIsEditable(value);
+		}
+
 		public CellViewCollection Views
 		{
 			get { return views; }
@@ -161,7 +166,10 @@ namespace Xwt
 			get
 			{
 				if (Backend.SelectedRow == -1)
-					return null;
+				{
+					return Backend.SelectedText;
+				}
+
 				return (string)Items.DataSource.GetValue(Backend.SelectedRow, 0);
 			}
 			set
