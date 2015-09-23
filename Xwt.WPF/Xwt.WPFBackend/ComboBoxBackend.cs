@@ -45,20 +45,20 @@ namespace Xwt.WPFBackend
 
 		static ComboBoxBackend()
 		{
-			var factory = new FrameworkElementFactory(typeof(WindowsSeparator));
-			factory.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+			var factory = new FrameworkElementFactory (typeof (WindowsSeparator));
+			factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
 
-			var sepTemplate = new ControlTemplate(typeof(ComboBoxItem));
+			var sepTemplate = new ControlTemplate (typeof (ComboBoxItem));
 			sepTemplate.VisualTree = factory;
 
 			DataTrigger trigger = new DataTrigger();
-			trigger.Binding = new Binding(".[1]") { Converter = new TypeToStringConverter() };
+			trigger.Binding = new Binding (".[1]") { Converter = new TypeToStringConverter() };
 			trigger.Value = typeof(ItemSeparator).Name;
-			trigger.Setters.Add(new Setter(Control.TemplateProperty, sepTemplate));
-			trigger.Setters.Add(new Setter(UIElement.IsEnabledProperty, false));
+			trigger.Setters.Add (new Setter (Control.TemplateProperty, sepTemplate));
+			trigger.Setters.Add (new Setter (UIElement.IsEnabledProperty, false));
 
-			ContainerStyle = new Style(typeof(ComboBoxItem));
-			ContainerStyle.Triggers.Add(trigger);
+			ContainerStyle = new Style (typeof (ComboBoxItem));
+			ContainerStyle.Triggers.Add (trigger);
 		}
 
 		public ComboBoxBackend()
@@ -67,12 +67,12 @@ namespace Xwt.WPFBackend
 			ComboBox.DisplayMemberPath = ".[0]";
 			//ComboBox.ItemTemplate = DefaultTemplate;
 			ComboBox.ItemContainerStyle = ContainerStyle;
-        }
+		}
 
-		public void SetViews(CellViewCollection views)
+		public void SetViews (CellViewCollection views)
 		{
 			ComboBox.DisplayMemberPath = null;
-			ComboBox.ItemTemplate = GetDataTemplate(views);
+			ComboBox.ItemTemplate = GetDataTemplate (views);
 		}
 
 		public void SetIsEditable(bool isEditable)
@@ -86,7 +86,7 @@ namespace Xwt.WPFBackend
 			if (dataSource != null)
 				ComboBox.ItemsSource = dataSource;
 			else
-				ComboBox.ItemsSource = new ListSourceNotifyWrapper(source);
+				ComboBox.ItemsSource = new ListSourceNotifyWrapper (source);
 		}
 
 		public int SelectedRow
@@ -102,13 +102,11 @@ namespace Xwt.WPFBackend
 
 		public override void EnableEvent(object eventId)
 		{
-			base.EnableEvent(eventId);
+			base.EnableEvent (eventId);
 
-			if (eventId is ComboBoxEvent)
-			{
+			if (eventId is ComboBoxEvent) {
 
-				switch ((ComboBoxEvent)eventId)
-				{
+				switch ((ComboBoxEvent)eventId) {
 					case ComboBoxEvent.SelectionChanged:
 						ComboBox.SelectionChanged += OnSelectionChanged;
 						break;
@@ -116,15 +114,13 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		public override void DisableEvent(object eventId)
+		public override void DisableEvent (object eventId)
 		{
-			base.DisableEvent(eventId);
+			base.DisableEvent (eventId);
 
-			if (eventId is ComboBoxEvent)
-			{
+			if (eventId is ComboBoxEvent) {
 
-				switch ((ComboBoxEvent)eventId)
-				{
+				switch ((ComboBoxEvent)eventId) {
 					case ComboBoxEvent.SelectionChanged:
 						ComboBox.SelectionChanged -= OnSelectionChanged;
 						break;
@@ -134,39 +130,35 @@ namespace Xwt.WPFBackend
 
 		protected ExComboBox ComboBox
 		{
-			get { return (ExComboBox)Widget; }
+			get { return (ExComboBox) Widget; }
 			set { Widget = value; }
 		}
 
 		protected IComboBoxEventSink ComboBoxEventSink
 		{
-			get { return (IComboBoxEventSink)EventSink; }
+			get { return (IComboBoxEventSink) EventSink; }
 		}
 
-		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void OnSelectionChanged (object sender, SelectionChangedEventArgs e)
 		{
-			Context.InvokeUserCode(ComboBoxEventSink.OnSelectionChanged);
+			Context.InvokeUserCode (ComboBoxEventSink.OnSelectionChanged);
 		}
 
-		private DataTemplate GetDataTemplate(IList<CellView> views)
+		private DataTemplate GetDataTemplate (IList<CellView> views)
 		{
-			var template = new DataTemplate(typeof(object[]));
+			var template = new DataTemplate (typeof (object[]));
 
 			FrameworkElementFactory root;
-			if (views.Count > 1)
-			{
-				FrameworkElementFactory spFactory = new FrameworkElementFactory(typeof(StackPanel));
-				spFactory.SetValue(StackPanel.OrientationProperty, WindowsOrientation.Horizontal);
+			if (views.Count > 1) {
+				FrameworkElementFactory spFactory = new FrameworkElementFactory (typeof (StackPanel));
+				spFactory.SetValue (StackPanel.OrientationProperty, WindowsOrientation.Horizontal);
 
-				foreach (var view in views)
-				{
+				foreach (var view in views) {
 					spFactory.AppendChild(CellUtil.CreateBoundCellRenderer(Context, Frontend, view));
 				}
 
 				root = spFactory;
-			}
-			else
-			{
+			} else {
 				root = CellUtil.CreateBoundCellRenderer(Context, Frontend, views[0]);
 			}
 

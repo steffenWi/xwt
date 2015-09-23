@@ -27,7 +27,7 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IComboBoxBackend : IWidgetBackend
+	public interface IComboBoxBackend: IWidgetBackend
 	{
 		void SetViews(CellViewCollection views);
 		void SetSource(IListDataSource source, IBackend sourceBackend);
@@ -37,10 +37,10 @@ namespace Xwt.Backends
 		string SelectedText { get; }
 	}
 
-	public interface IComboBoxEventSink : IWidgetEventSink
+	public interface IComboBoxEventSink: IWidgetEventSink
 	{
-		void OnSelectionChanged();
-		bool RowIsSeparator(int rowIndex);
+		void OnSelectionChanged ();
+		bool RowIsSeparator (int rowIndex);
 	}
 
 	public enum ComboBoxEvent

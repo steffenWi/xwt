@@ -2,20 +2,19 @@ using System;
 
 namespace Xwt.Backends
 {
-	public interface IExpanderBackend : IWidgetBackend, IChildPlacementHandler
+	public interface IExpanderBackend: IWidgetBackend, IChildPlacementHandler
 	{
 		string Label { get; set; }
 		bool Expanded { get; set; }
-		void SetContent(IWidgetBackend child);
+		void SetContent (IWidgetBackend child);
 	}
 
-	public interface IExpandEventSink : IWidgetEventSink
+	public interface IExpandEventSink: IWidgetEventSink
 	{
-		void ExpandChanged();
+		void ExpandChanged ();
 	}
 
-	public enum ExpandEvent
-	{
+	public enum ExpandEvent {
 		ExpandChanged
 	}
 }

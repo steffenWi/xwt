@@ -29,40 +29,39 @@ using Xwt.Backends;
 
 namespace Xwt
 {
-	[BackendType(typeof(IScrollControlBackend))]
-	public class ScrollControl : XwtComponent
+	[BackendType (typeof(IScrollControlBackend))]
+	public class ScrollControl: XwtComponent
 	{
 		EventHandler valueChanged;
-
-		class ScrollAdjustmentBackendHost : BackendHost<ScrollControl, IScrollControlBackend>, IScrollControlEventSink
+		
+		class ScrollAdjustmentBackendHost: BackendHost<ScrollControl,IScrollControlBackend>, IScrollControlEventSink
 		{
-			public void OnValueChanged()
+			public void OnValueChanged ()
 			{
-				Parent.OnValueChanged(EventArgs.Empty);
+				Parent.OnValueChanged (EventArgs.Empty);
 			}
 		}
-
-		protected override Xwt.Backends.BackendHost CreateBackendHost()
+		
+		protected override Xwt.Backends.BackendHost CreateBackendHost ()
 		{
-			return new ScrollAdjustmentBackendHost();
+			return new ScrollAdjustmentBackendHost ();
+		}
+		
+		static ScrollControl ()
+		{
+			MapEvent (ScrollAdjustmentEvent.ValueChanged, typeof(ScrollAdjustment), "OnValueChanged");
 		}
 
-		static ScrollControl()
+		internal ScrollControl (IScrollControlBackend backend)
 		{
-			MapEvent(ScrollAdjustmentEvent.ValueChanged, typeof(ScrollAdjustment), "OnValueChanged");
+			BackendHost.SetCustomBackend (backend);
+			backend.Initialize ((ScrollAdjustmentBackendHost)BackendHost);
 		}
-
-		internal ScrollControl(IScrollControlBackend backend)
-		{
-			BackendHost.SetCustomBackend(backend);
-			backend.Initialize((ScrollAdjustmentBackendHost)BackendHost);
+		
+		IScrollControlBackend Backend {
+			get { return (IScrollControlBackend) BackendHost.Backend; }
 		}
-
-		IScrollControlBackend Backend
-		{
-			get { return (IScrollControlBackend)BackendHost.Backend; }
-		}
-
+		
 		/// <summary>
 		/// Updates the adjustment value to ensure that a range is in the current page
 		/// </summary>
@@ -77,10 +76,9 @@ namespace Xwt
 		/// (i.e. between Value and Value + PageSize). If the range is larger than the page size, then only the
 		/// start of it will be in the current page. A "Changed" event will be raised if the value is changed.
 		/// </remarks>
-		public void ClampPage(double lower, double upper)
+		public void ClampPage (double lower, double upper)
 		{
-			if (upper - lower >= PageSize || upper <= lower)
-			{
+			if (upper - lower >= PageSize || upper <= lower) {
 				Value = lower;
 				return;
 			}
@@ -91,9 +89,8 @@ namespace Xwt
 			else
 				Value = upper - PageSize;
 		}
-
-		public double Value
-		{
+		
+		public double Value {
 			get { return Backend.Value; }
 			set { Backend.Value = value; }
 		}
@@ -105,8 +102,7 @@ namespace Xwt
 		/// The lower value.
 		/// </value>
 		/// <remarks>It must be &lt;= UpperValue</remarks>
-		public double LowerValue
-		{
+		public double LowerValue {
 			get { return Backend.LowerValue; }
 		}
 
@@ -117,8 +113,7 @@ namespace Xwt
 		/// The upper value.
 		/// </value>
 		/// <remarks>It must be >= LowerValue</remarks>
-		public double UpperValue
-		{
+		public double UpperValue {
 			get { return Backend.UpperValue; }
 		}
 
@@ -129,8 +124,7 @@ namespace Xwt
 		/// <value>
 		/// The page increment.
 		/// </value>
-		public double PageIncrement
-		{
+		public double PageIncrement {
 			get { return Backend.PageIncrement; }
 		}
 
@@ -140,8 +134,7 @@ namespace Xwt
 		/// <value>
 		/// The step increment.
 		/// </value>
-		public double StepIncrement
-		{
+		public double StepIncrement {
 			get { return Backend.StepIncrement; }
 		}
 
@@ -151,28 +144,24 @@ namespace Xwt
 		/// <remarks>
 		/// For example, if LowerValue=0, UpperValue=100, Value=25 and PageSize=50, the visible range will be 25 to 75
 		/// </remarks>
-		public double PageSize
-		{
+		public double PageSize {
 			get { return Backend.PageSize; }
 		}
 
-		protected virtual void OnValueChanged(EventArgs e)
+		protected virtual void OnValueChanged (EventArgs e)
 		{
 			if (valueChanged != null)
-				valueChanged(this, e);
+				valueChanged (this, e);
 		}
-
-		public event EventHandler ValueChanged
-		{
-			add
-			{
-				BackendHost.OnBeforeEventAdd(ScrollAdjustmentEvent.ValueChanged, valueChanged);
+		
+		public event EventHandler ValueChanged {
+			add {
+				BackendHost.OnBeforeEventAdd (ScrollAdjustmentEvent.ValueChanged, valueChanged);
 				valueChanged += value;
 			}
-			remove
-			{
+			remove {
 				valueChanged -= value;
-				BackendHost.OnAfterEventRemove(ScrollAdjustmentEvent.ValueChanged, valueChanged);
+				BackendHost.OnAfterEventRemove (ScrollAdjustmentEvent.ValueChanged, valueChanged);
 			}
 		}
 	}

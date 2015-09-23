@@ -30,144 +30,129 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
-	[BackendType(typeof(ICheckBoxBackend))]
+	[BackendType (typeof(ICheckBoxBackend))]
 	[ContentProperty("Content")]
-	public class CheckBox : Widget
+	public class CheckBox: Widget
 	{
 		Widget content;
 		EventHandler clicked;
 		EventHandler toggled;
 		string label = "";
-
-		protected new class WidgetBackendHost : Widget.WidgetBackendHost, ICheckBoxEventSink
+		
+		protected new class WidgetBackendHost: Widget.WidgetBackendHost, ICheckBoxEventSink
 		{
-			public void OnClicked()
+			public void OnClicked ()
 			{
-				((CheckBox)Parent).OnClicked(EventArgs.Empty);
+				((CheckBox)Parent).OnClicked (EventArgs.Empty);
 			}
-			public void OnToggled()
+			public void OnToggled ()
 			{
-				((CheckBox)Parent).OnToggled(EventArgs.Empty);
+				((CheckBox)Parent).OnToggled (EventArgs.Empty);
 			}
 		}
-
-		static CheckBox()
+		
+		static CheckBox ()
 		{
-			MapEvent(CheckBoxEvent.Clicked, typeof(CheckBox), "OnClicked");
-			MapEvent(CheckBoxEvent.Toggled, typeof(CheckBox), "OnToggled");
+			MapEvent (CheckBoxEvent.Clicked, typeof(CheckBox), "OnClicked");
+			MapEvent (CheckBoxEvent.Toggled, typeof(CheckBox), "OnToggled");
 		}
-
-		public CheckBox()
+		
+		public CheckBox ()
 		{
 		}
-
-		public CheckBox(string label)
+		
+		public CheckBox (string label)
 		{
-			VerifyConstructorCall(this);
+			VerifyConstructorCall (this);
 			Label = label;
 		}
-
-		protected override BackendHost CreateBackendHost()
+		
+		protected override BackendHost CreateBackendHost ()
 		{
-			return new WidgetBackendHost();
+			return new WidgetBackendHost ();
 		}
-
-		ICheckBoxBackend Backend
-		{
-			get { return (ICheckBoxBackend)BackendHost.Backend; }
+		
+		ICheckBoxBackend Backend {
+			get { return (ICheckBoxBackend) BackendHost.Backend; }
 		}
-
-		[DefaultValue("")]
-		public string Label
-		{
+		
+		[DefaultValue ("")]
+		public string Label {
 			get { return label; }
-			set
-			{
+			set {
 				label = value;
-				Backend.SetContent(label);
-				OnPreferredSizeChanged();
+				Backend.SetContent (label);
+				OnPreferredSizeChanged ();
 			}
 		}
 
-		[DefaultValue(null)]
-		public new Widget Content
-		{
+		[DefaultValue (null)]
+		public new Widget Content {
 			get { return content; }
-			set
-			{
+			set {
 				if (content != null)
-					UnregisterChild(content);
+					UnregisterChild (content);
 				content = value;
 				if (content != null)
-					RegisterChild(content);
-				Backend.SetContent((IWidgetBackend)GetBackend(content));
-				OnPreferredSizeChanged();
+					RegisterChild (content);
+				Backend.SetContent ((IWidgetBackend)GetBackend (content));
+				OnPreferredSizeChanged ();
 			}
 		}
-
-		[DefaultValue(false)]
-		public bool Active
-		{
-			get { return State == CheckBoxState.On; }
-			set { State = value.ToCheckBoxState(); }
+		
+		[DefaultValue (false)]
+		public bool Active {
+			get { return State == CheckBoxState.On;}
+			set { State = value.ToCheckBoxState (); }
 		}
-
-		[DefaultValue(false)]
-		public CheckBoxState State
-		{
+		
+		[DefaultValue (false)]
+		public CheckBoxState State {
 			get { return Backend.State; }
-			set
-			{
-				if (!value.IsValid())
-					throw new ArgumentOutOfRangeException("Invalid check box state value");
+			set {
+				if (!value.IsValid ())
+					throw new ArgumentOutOfRangeException ("Invalid check box state value");
 				Backend.State = value;
 			}
 		}
-
-		[DefaultValue(false)]
-		public bool AllowMixed
-		{
+		
+		[DefaultValue (false)]
+		public bool AllowMixed {
 			get { return Backend.AllowMixed; }
 			set { Backend.AllowMixed = value; }
 		}
-
-		protected virtual void OnClicked(EventArgs e)
+		
+		protected virtual void OnClicked (EventArgs e)
 		{
 			if (clicked != null)
-				clicked(this, e);
+				clicked (this, e);
 		}
-
-		protected virtual void OnToggled(EventArgs e)
+		
+		protected virtual void OnToggled (EventArgs e)
 		{
 			if (toggled != null)
-				toggled(this, e);
+				toggled (this, e);
 		}
-
-		public event EventHandler Clicked
-		{
-			add
-			{
-				BackendHost.OnBeforeEventAdd(CheckBoxEvent.Clicked, clicked);
+		
+		public event EventHandler Clicked {
+			add {
+				BackendHost.OnBeforeEventAdd (CheckBoxEvent.Clicked, clicked);
 				clicked += value;
 			}
-			remove
-			{
+			remove {
 				clicked -= value;
-				BackendHost.OnAfterEventRemove(CheckBoxEvent.Clicked, clicked);
+				BackendHost.OnAfterEventRemove (CheckBoxEvent.Clicked, clicked);
 			}
 		}
-
-		public event EventHandler Toggled
-		{
-			add
-			{
-				BackendHost.OnBeforeEventAdd(CheckBoxEvent.Toggled, toggled);
+		
+		public event EventHandler Toggled {
+			add {
+				BackendHost.OnBeforeEventAdd (CheckBoxEvent.Toggled, toggled);
 				toggled += value;
 			}
-			remove
-			{
+			remove {
 				toggled -= value;
-				BackendHost.OnAfterEventRemove(CheckBoxEvent.Toggled, toggled);
+				BackendHost.OnAfterEventRemove (CheckBoxEvent.Toggled, toggled);
 			}
 		}
 	}
