@@ -42,12 +42,19 @@ namespace Xwt.WPFBackend
 	{
 		private Dictionary<GridViewColumnHeader, GridViewColumn> headerAndColumnPairs = new Dictionary<GridViewColumnHeader, GridViewColumn>();
 		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
+		private Dictionary<GridViewColumnHeader, GridViewColumn> headerAndColumnPairs = new Dictionary<GridViewColumnHeader, GridViewColumn>();
+		public ListViewBackend()
+		{
+			ListView = new ExListView();
+			ListView.View = this.view;
+		}
 
 		class CellInfo {
 			public ListViewColumn Column;
 			public int CellIndex;
 			public int ColumnIndex;
 		}
+
 
 		public ListViewBackend()
 		{
@@ -203,11 +210,16 @@ namespace Xwt.WPFBackend
 			switch (change)
 			{
 				case ListViewColumnChange.Title:
+
 			if (col.HeaderView != null)
 				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
+				if (col.HeaderView != null)
+					column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+				else
+					column.Header = col.Title;
 					break;
 				case ListViewColumnChange.Cells:
 					column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
@@ -226,7 +238,9 @@ namespace Xwt.WPFBackend
 					break;
 				default:
 					break;
+
 			MapColumn (col, column);
+			}
 		}
 
 		void MapColumn (ListViewColumn col, GridViewColumn handle)
