@@ -188,7 +188,6 @@ namespace Xwt.WPFBackend
 		}
 
 		private ObservableCollection<ValuesContainer> rows = new ObservableCollection<ValuesContainer>();
-
 		private Type[] columnTypes;
 
 		private void OnRowInserted (ListRowEventArgs e)

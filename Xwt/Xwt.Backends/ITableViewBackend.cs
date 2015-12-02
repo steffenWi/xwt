@@ -34,17 +34,18 @@ namespace Xwt.Backends
 		void SelectAll ();
 		void UnselectAll ();
 	}
-	
+
 	public interface ITableViewEventSink: IWidgetEventSink
 	{
-		void OnSelectionChanged ();
+		void OnSelectionChanged();
+
 		void ColumnHeaderClicked(object handle);
 	}
-	
+
 	public enum TableViewEvent
 	{
 		SelectionChanged
 	}
-	
+
 }
 

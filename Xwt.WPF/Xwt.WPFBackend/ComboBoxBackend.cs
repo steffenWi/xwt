@@ -47,7 +47,7 @@ namespace Xwt.WPFBackend
 		{
 			var factory = new FrameworkElementFactory (typeof (WindowsSeparator));
 			factory.SetValue (FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-			
+
 			var sepTemplate = new ControlTemplate (typeof (ComboBoxItem));
 			sepTemplate.VisualTree = factory;
 
@@ -103,13 +103,13 @@ namespace Xwt.WPFBackend
 		public override void EnableEvent(object eventId)
 		{
 			base.EnableEvent (eventId);
-			
+
 			if (eventId is ComboBoxEvent) {
 
 				switch ((ComboBoxEvent)eventId) {
 					case ComboBoxEvent.SelectionChanged:
 						ComboBox.SelectionChanged += OnSelectionChanged;
-					break;
+						break;
 				}
 			}
 		}
@@ -117,13 +117,13 @@ namespace Xwt.WPFBackend
 		public override void DisableEvent (object eventId)
 		{
 			base.DisableEvent (eventId);
-			
+
 			if (eventId is ComboBoxEvent) {
 
 				switch ((ComboBoxEvent)eventId) {
 					case ComboBoxEvent.SelectionChanged:
 						ComboBox.SelectionChanged -= OnSelectionChanged;
-					break;
+						break;
 				}
 			}
 		}
@@ -154,12 +154,12 @@ namespace Xwt.WPFBackend
 				spFactory.SetValue (StackPanel.OrientationProperty, WindowsOrientation.Horizontal);
 
 				foreach (var view in views) {
-                    spFactory.AppendChild(CellUtil.CreateBoundCellRenderer(Context, Frontend, view));
+					spFactory.AppendChild(CellUtil.CreateBoundCellRenderer(Context, Frontend, view));
 				}
 
 				root = spFactory;
 			} else {
-                root = CellUtil.CreateBoundCellRenderer(Context, Frontend, views[0]);
+				root = CellUtil.CreateBoundCellRenderer(Context, Frontend, views[0]);
 			}
 
 			template.VisualTree = root;

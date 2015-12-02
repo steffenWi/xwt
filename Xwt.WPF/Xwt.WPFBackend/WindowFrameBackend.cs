@@ -68,10 +68,13 @@ namespace Xwt.WPFBackend
 
 		public virtual void Dispose ()
 		{
-			if (Window.Dispatcher.CheckAccess ()) {
-				Window.Close ();
-			} else {
-				Window.Dispatcher.Invoke (DispatcherPriority.Normal, new ThreadStart (Window.Close));
+			if (Window.Dispatcher.CheckAccess())
+			{
+				Window.Close();
+			}
+			else
+			{
+				Window.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(Window.Close));
 			}
 		}
 

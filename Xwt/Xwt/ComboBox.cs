@@ -36,39 +36,39 @@ namespace Xwt
 		CellViewCollection views;
 		IListDataSource source;
 		ItemCollection itemCollection;
-		
+
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IComboBoxEventSink, ICellContainer
 		{
 			public void NotifyCellChanged ()
 			{
 				((ComboBox)Parent).OnCellChanged ();
 			}
-			
+
 			public void OnSelectionChanged ()
 			{
 				((ComboBox)Parent).OnSelectionChanged (EventArgs.Empty);
 			}
-			
+
 			public bool RowIsSeparator (int rowIndex)
 			{
 				return ((ComboBox)Parent).RowIsSeparator (rowIndex);
 			}
-			
+
 			public override Size GetDefaultNaturalSize ()
 			{
 				return Xwt.Backends.DefaultNaturalSizes.ComboBox;
 			}
 		}
-		
+
 		IComboBoxBackend Backend {
 			get { return (IComboBoxBackend) BackendHost.Backend; }
 		}
-		
+
 		public ComboBox ()
 		{
 			views = new CellViewCollection ((ICellContainer)BackendHost);
 		}
-		
+
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WidgetBackendHost ();
@@ -83,7 +83,7 @@ namespace Xwt
 		{
 			get { return views; }
 		}
-		
+
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public ItemCollection Items {
 			get {
@@ -97,7 +97,7 @@ namespace Xwt
 				return itemCollection;
 			}
 		}
-		
+
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public IListDataSource ItemsSource {
 			get { return source; }
@@ -110,7 +110,7 @@ namespace Xwt
 					source.RowInserted -= HandleModelChanged;
 					source.RowsReordered -= HandleModelChanged;
 				}
-				
+
 				source = value;
 				Backend.SetSource (source, source is IFrontend ? (IBackend) Toolkit.GetBackend (source) : null);
 
@@ -145,7 +145,7 @@ namespace Xwt
 				SelectedIndex = Items.IndexOf (withItem: value);
 			}
 		}
-		
+
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public string SelectedText {
 			get {
@@ -160,19 +160,19 @@ namespace Xwt
 				SelectedIndex = Items.IndexOf (withLabel: value);
 			}
 		}
-		
+
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		public Func<int,bool> RowSeparatorCheck {
 			get; set;
 		}
-		
+
 		void OnCellChanged ()
 		{
 			Backend.SetViews (views);
 		}
-		
+
 		EventHandler selectionChanged;
-		
+
 		public event EventHandler SelectionChanged {
 			add {
 				BackendHost.OnBeforeEventAdd (ComboBoxEvent.SelectionChanged, selectionChanged);
@@ -183,13 +183,13 @@ namespace Xwt
 				BackendHost.OnAfterEventRemove (ComboBoxEvent.SelectionChanged, selectionChanged);
 			}
 		}
-		
+
 		protected virtual void OnSelectionChanged (EventArgs args)
 		{
 			if (selectionChanged != null)
 				selectionChanged (this, args);
 		}
-		
+
 		protected virtual bool RowIsSeparator (int rowIndex)
 		{
 			if (RowSeparatorCheck != null)

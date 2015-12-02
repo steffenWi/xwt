@@ -40,6 +40,7 @@ namespace Xwt.WPFBackend
 	public class ListViewBackend
 		: WidgetBackend, IListViewBackend
 	{
+		private Dictionary<GridViewColumnHeader, GridViewColumn> headerAndColumnPairs = new Dictionary<GridViewColumnHeader, GridViewColumn>();
 		Dictionary<CellView,CellInfo> cellViews = new Dictionary<CellView, CellInfo> ();
 		private Dictionary<GridViewColumnHeader, GridViewColumn> headerAndColumnPairs = new Dictionary<GridViewColumnHeader, GridViewColumn>();
 		public ListViewBackend()
@@ -54,18 +55,25 @@ namespace Xwt.WPFBackend
 			public int ColumnIndex;
 		}
 
+
+		public ListViewBackend()
+		{
+			ListView = new ExListView();
+			ListView.View = this.view;
+		}
+
 		public ScrollViewer ScrollViewer {
 			get {
-	            Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
-	            if (border != null)
-	                return border.Child as ScrollViewer;
-	            else
-	                return null;
-	        }
-        }
+				Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
+				if (border != null)
+					return border.Child as ScrollViewer;
+				else
+					return null;
+			}
+		}
 
         public int CurrentEventRow { get; set;  }
-		
+
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
 			set { ScrollViewer.SetVerticalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
@@ -85,8 +93,8 @@ namespace Xwt.WPFBackend
 		{
 			return new ScrollControlBackend(ScrollViewer, false);
 		}
-       
-        private bool borderVisible = true;
+
+		private bool borderVisible = true;
 		public bool BorderVisible
 		{
 			get { return this.borderVisible; }
@@ -109,7 +117,7 @@ namespace Xwt.WPFBackend
 			set {
 				this.headersVisible = value;
 				if (value) {
-				    if (this.view.ColumnHeaderContainerStyle != null)
+					if (this.view.ColumnHeaderContainerStyle != null)
 						this.view.ColumnHeaderContainerStyle.Setters.Remove (HideHeadersSetter);
 				} else {
 					if (this.view.ColumnHeaderContainerStyle == null)
@@ -202,11 +210,16 @@ namespace Xwt.WPFBackend
 			switch (change)
 			{
 				case ListViewColumnChange.Title:
-					if (col.HeaderView != null)
-						column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
-					else
-						column.Header = col.Title;
 
+			if (col.HeaderView != null)
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+			else
+				column.Header = col.Title;
+
+				if (col.HeaderView != null)
+					column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
+				else
+					column.Header = col.Title;
 					break;
 				case ListViewColumnChange.Cells:
 					column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
@@ -225,6 +238,8 @@ namespace Xwt.WPFBackend
 					break;
 				default:
 					break;
+
+			MapColumn (col, column);
 			}
 		}
 
@@ -246,15 +261,15 @@ namespace Xwt.WPFBackend
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
-		{
+			{
 			switch (mode) {
-			case SelectionMode.Single:
-				ListView.SelectionMode = SWC.SelectionMode.Single;
-				break;
+				case SelectionMode.Single:
+					ListView.SelectionMode = SWC.SelectionMode.Single;
+					break;
 
-			case SelectionMode.Multiple:
-				ListView.SelectionMode = SWC.SelectionMode.Extended;
-				break;
+				case SelectionMode.Multiple:
+					ListView.SelectionMode = SWC.SelectionMode.Extended;
+					break;
 			}
 		}
 
@@ -305,21 +320,21 @@ namespace Xwt.WPFBackend
 			base.EnableEvent (eventId);
 			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
-				case TableViewEvent.SelectionChanged:
-					ListView.SelectionChanged += OnSelectionChanged;
-					break;
+					case TableViewEvent.SelectionChanged:
+						ListView.SelectionChanged += OnSelectionChanged;
+						break;
 				}
 			}
 		}
 
 		public override void DisableEvent (object eventId)
-		{
+				{
 			base.DisableEvent (eventId);
 			if (eventId is TableViewEvent) {
 				switch ((TableViewEvent)eventId) {
-				case TableViewEvent.SelectionChanged:
-					ListView.SelectionChanged -= OnSelectionChanged;
-					break;
+					case TableViewEvent.SelectionChanged:
+						ListView.SelectionChanged -= OnSelectionChanged;
+						break;
 				}
 			}
 		}
@@ -345,6 +360,17 @@ namespace Xwt.WPFBackend
 		private static readonly Setter GridHorizontalSetter = new Setter (ListViewItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
 		private static readonly Setter BorderBrushSetter = new Setter (ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
+
+		public int GetRowAtPosition(Point p)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
+		{
+			throw new NotImplementedException();
+		}
+	}
         public int GetRowAtPosition(Point p)
 		{
 			var result = VisualTreeHelper.HitTest (ListView, new System.Windows.Point (p.X, p.Y)) as PointHitTestResult;
