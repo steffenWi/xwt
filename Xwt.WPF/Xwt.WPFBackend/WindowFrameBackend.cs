@@ -234,6 +234,11 @@ namespace Xwt.WPFBackend
 			r.Width = width;
 			r.Height = height;
 			Bounds = r;
+			if (window.ResizeMode == ResizeMode.NoResize)
+			{
+				window.MaxHeight = height;
+				window.MaxWidth = width;
+			}
 		}
 
 		public virtual Rectangle Bounds {
